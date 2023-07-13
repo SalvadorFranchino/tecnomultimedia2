@@ -1,5 +1,0 @@
-class Obra {
-  Obra(){}
-
-  
-}
