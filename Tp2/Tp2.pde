@@ -23,7 +23,7 @@ import fisica.*;
 boolean caenPelotas=true;
 boolean queAro=true;
 FWorld mundo;
-PImage imagen_pelota, fondo, imagen_tablero, imagen_aro, imagen_personaje, imagen_pesonajeIzq, portada, imagen_aroDos, imagen_marcador, imagen_mano, imagen_manodos, ganaste, perdiste;
+PImage imagen_pelota, fondo, imagen_tablero, imagen_tableroDos, imagen_tableroVerde, imagen_tableroDosVerde, imagen_aro, imagen_personaje, imagen_pesonajeIzq, portada, imagen_aroDos, imagen_marcador, imagen_mano, imagen_manodos, ganaste, perdiste;
 ArrayList<Pelota> pelotas = new ArrayList<Pelota>();
 FBox tablero, personaje, rec, recD, tableroDos, marcador;
 FCircle aro, aroDos, mano, manodos;
@@ -60,7 +60,10 @@ void setup() {
   mundo.setEdges();
   fondo = loadImage("fondov.jpg");
   imagen_pelota = loadImage("pelota1.png");
-  imagen_tablero = loadImage("Tableroposta.png");
+  imagen_tablero = loadImage("fotoAroPosta.png");
+  imagen_tableroDos= loadImage("fotoAroDos.png");
+  imagen_tableroVerde= loadImage("fotoAroPostaVerde.png");
+  imagen_tableroDosVerde= loadImage("fotoAroDosVerde.png");
   imagen_aro = loadImage("aroposta.png");
   imagen_personaje = loadImage("personsin.png");
   imagen_pesonajeIzq = loadImage("personIzquierda.png");
@@ -73,21 +76,23 @@ void setup() {
   perdiste= loadImage("perdiste.jpg");
 
 
-  tablero = new FBox(90, 90);
-  tablero.setPosition(910, 110);
+  tablero = new FBox(60, 60);
+  tablero.setPosition(880, 105);
   tablero.setStatic(true);
-  tablero.setFill(0, 255, 0);
+  tablero.attachImage(imagen_tableroDosVerde);
+  //tablero.setFill(0, 255, 0);
   mundo.add(tablero);
 
-  tableroDos = new FBox(65, 90);
-  tableroDos.setPosition(10, 110);
+  tableroDos = new FBox(20, 20);
+  tableroDos.setPosition(49, 105);
   tableroDos.setStatic(true);
+  tableroDos.attachImage(imagen_tablero);
   mundo.add(tableroDos);
 
 
 
   aro = new FCircle(60); //radio
-  aro.setPosition(828, 161);
+  aro.setPosition(808, 151);
   aro.setStatic(true);
   aro.attachImage(imagen_aro);
   aro.setSensor(true); //el aro no  colisiones
@@ -95,7 +100,7 @@ void setup() {
 
 
   aroDos = new FCircle(60); //radio
-  aroDos.setPosition(80, 161);
+  aroDos.setPosition(95, 161);
   aroDos.setStatic(true);
   aroDos.attachImage(imagen_aroDos);
   aroDos.setSensor(true); //el aro no  colisiones
@@ -143,7 +148,7 @@ void setup() {
   manodos.setPosition(mouseX, mouseY);
   manodos.attachImage( imagen_manodos);
   manodos.setRotatable(false);
-  mundo.add(manodos);
+
 
 
   cadena=new FDistanceJoint(personaje, mano);
@@ -248,14 +253,14 @@ void draw() {
 
       if (tiempo>=12) {
         personaje.attachImage( imagen_pesonajeIzq);
-        tablero.setFill(255);
-        tableroDos.setFill(0, 255, 0);
+        tablero.attachImage( imagen_tableroDos);
+        tableroDos.attachImage( imagen_tableroVerde);
         queAro=false;
         mano.attachImage( imagen_manodos);
       }
 
       if (tiempo == 23) {
-        // Elimina todas  pelotas 
+        // Elimina todas  pelotas
 
         pelotas.remove(i);
         mundo.remove(pelota.pelota);
@@ -270,8 +275,8 @@ void draw() {
 
     //CONTADOR DEL TIEMPO//
     if (second() != ultimoSegundo) {
-      tiempo++;  
-      ultimoSegundo = second();  
+      tiempo++;
+      ultimoSegundo = second();
     }
 
     // Dibuja el contador en  pantalla
@@ -291,20 +296,19 @@ void draw() {
       jugar.cue(0);
       caenPelotas = ! caenPelotas;
     }
-
   } else if (estadoActual == ESTADO_GANASTE) {
     // Pantalla de "ganaste"
     background(ganaste);
     winer.play();
     if (keyPressed) {
-      reiniciarJuego(); 
+      reiniciarJuego();
     }
   } else if (estadoActual == ESTADO_PERDISTE) {
     // Pantalla de perdiste
     background(perdiste);
-  
+
     if (keyPressed) {
-      reiniciarJuego(); 
+      reiniciarJuego();
     }
   }
 }
@@ -332,8 +336,8 @@ void reiniciarJuego() {
   estadoActual = ESTADO_INICIO;
   personaje.attachImage(imagen_personaje );
   mano.attachImage( imagen_mano);
-  tablero.setFill(0, 255, 0);
-  tableroDos.setFill( 255);
+  //tablero.setFill(0, 255, 0);
+  // tableroDos.setFill( 255);
   caenPelotas = true;
   contadorPelotas =0;
   tiempoUltimaAparicion = 0;
@@ -353,9 +357,9 @@ void contactStarted(FContact contacto) {
     // Verificar si la colisión involucra al personaje y una pelota
     if ((body1.getName().equals("personaje_") && body2.getName().startsWith("circulo_")) ||
       (body2.getName().equals("personaje_") && body1.getName().startsWith("circulo_"))) {
-    
 
-      rebote.trigger(); 
+
+      rebote.trigger();
     }
   }
 }
